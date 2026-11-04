@@ -36,6 +36,12 @@ body {
 	position: relative;
 }
 
+.social-icons,
+.top-includes > li:has(.social-icons),
+#myWhatsApp {
+	display: none !important;
+}
+
 h1,
 h2,
 h3,
@@ -51,6 +57,34 @@ h6 {
 	margin-bottom: 0.6em;
 	margin-top: 0.65em;
 	word-break: break-word;
+}
+
+.top-nav .sf-menu > li.nav-contact-item > a.nav-contact-link {
+	display: inline-flex;
+	min-height: 38px;
+	align-items: center;
+	justify-content: center;
+	margin: 4px 0 4px 8px;
+	padding: 0 16px;
+	border: 1px solid var(--red);
+	border-radius: 3px;
+	background: var(--red);
+	color: #fff !important;
+	line-height: 1.2;
+}
+
+.top-nav .sf-menu > li.nav-contact-item > a.nav-contact-link:hover,
+.top-nav .sf-menu > li.nav-contact-item > a.nav-contact-link:focus-visible {
+	border-color: var(--red-hover);
+	background: var(--red-hover);
+	color: #fff !important;
+}
+
+@media (max-width: 991px) {
+	.top-nav .sf-menu > li.nav-contact-item > a.nav-contact-link {
+		width: fit-content;
+		margin: 8px 0;
+	}
 }
 
 h1 {
@@ -27236,6 +27270,114 @@ a img.aligncenter {
 	.affix .sf-menu > li > a:before {
 		bottom: 0 !important;
 	}
+}
+
+.page_header .top-nav ul.sf-menu > li.has-click-menu:not(.menu-open) > ul,
+.page_header .top-nav ul.sf-menu > li.has-click-menu:not(.menu-open) > .mega-menu {
+	display: none !important;
+}
+
+.page_header .top-nav ul.sf-menu > li.has-click-menu.menu-open > ul,
+.page_header .top-nav ul.sf-menu > li.has-click-menu.menu-open > .mega-menu {
+	display: block !important;
+}
+
+.page_header .top-nav ul.sf-menu > li.has-click-menu.menu-open > ul[style*="grid-template-columns"] {
+	display: grid !important;
+}
+
+.page_header .top-nav ul.sf-menu li.has-click-submenu:not(.submenu-open) > ul {
+	display: none !important;
+}
+
+.page_header .top-nav ul.sf-menu li.has-click-submenu.submenu-open > ul {
+	display: block !important;
+}
+
+.page_header .top-nav ul.sf-menu li.has-click-submenu.submenu-open > ul[style*="grid-template-columns"] {
+	display: grid !important;
+}
+
+.page_header .top-nav ul.sf-menu > li.has-click-menu > a[aria-haspopup="true"] {
+	display: inline-flex;
+	width: auto;
+	align-items: center;
+}
+
+.page_header .top-nav ul.sf-menu li.has-click-submenu {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+}
+
+.page_header .top-nav ul.sf-menu li.has-click-submenu > a[aria-haspopup="true"] {
+	flex: 0 1 auto;
+	width: auto;
+	max-width: calc(100% - 34px);
+	padding-right: 0 !important;
+	white-space: normal;
+}
+
+.page_header .top-nav ul.sf-menu li.has-click-submenu > .sf-submenu-toggle {
+	position: static;
+	display: inline-flex;
+	flex: 0 0 28px;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 34px;
+	margin-left: 4px;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	color: var(--text);
+	cursor: pointer;
+}
+
+.page_header .top-nav ul.sf-menu li.has-click-submenu > .sf-submenu-toggle::before {
+	position: static;
+	content: "\f105";
+	font-family: "Font Awesome 5 Free", sans-serif;
+	font-weight: 900;
+}
+
+.page_header .top-nav ul.sf-menu li.has-click-submenu.submenu-open > .sf-submenu-toggle::before {
+	display: inline-block;
+	transform: rotate(90deg);
+}
+
+.page_header .top-nav ul.sf-menu li.has-click-submenu > a[aria-haspopup="true"] {
+	padding-right: 38px !important;
+}
+
+.page_header .top-nav ul.sf-menu li.has-click-submenu > .sf-submenu-toggle:focus-visible {
+	outline: 2px solid var(--red);
+	outline-offset: 1px;
+}
+
+.page_header .top-nav .sf-menu > li > a:hover,
+.page_header .top-nav .sf-menu > li > a:focus-visible {
+	background: transparent !important;
+	color: #525C63 !important;
+}
+
+.page_header .top-nav .sf-menu > li > a::after,
+.page_header .top-nav .sf-menu > li:hover > a::after {
+	display: none !important;
+	transform: none !important;
+}
+
+.page_header .top-nav .sf-menu li > ul a:hover,
+.page_header .top-nav .sf-menu li > ul a:focus-visible {
+	border-left: 0 !important;
+	background-color: #F5F7F8 !important;
+	color: var(--text) !important;
+}
+
+.page_header .top-nav .sf-menu .sf-submenu-toggle:hover,
+.page_header .top-nav .sf-menu .sf-submenu-toggle:focus-visible {
+	background-color: #F5F7F8;
+	color: var(--text);
 }
 
 @media (min-width: 1200px) and (min-width: 1500px) {

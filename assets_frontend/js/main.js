@@ -679,7 +679,7 @@
             $('[class*="scrollbar-"]').scrollbar();
         }
         if ($().superfish) {
-            $('ul.sf-menu').superfish({
+            $('ul.sf-menu').not('.page_header .top-nav > ul.sf-menu').superfish({
                 popUpSelector: 'ul:not(.mega-menu ul), .mega-menu ',
                 delay: 700,
                 animation: {opacity: 'show', marginTop: 10},
@@ -703,12 +703,78 @@
                     });
                 }
             });
-            
-            $('.top-nav *').on('mouseenter mouseout', function(e) {
-                e.stopPropagation();
-            })
-            $('.sf-with-ul').on('click', function (e) {
-                $(".dropdown-menu").toggle(!$(".dropdown-menu").is(':visible'));
+
+            var $headerMenus = $('.page_header .top-nav > ul.sf-menu');
+
+            function closeHeaderMenus() {
+                $headerMenus.children('li.menu-open')
+                    .removeClass('menu-open')
+                    .children('a[aria-haspopup="true"]')
+                    .attr('aria-expanded', 'false');
+                $headerMenus.find('li.submenu-open')
+                    .removeClass('submenu-open')
+                    .children('a, .sf-submenu-toggle')
+                    .attr('aria-expanded', 'false');
+            }
+
+            $headerMenus.children('li').has('> ul, > .mega-menu').each(function () {
+                var $menuItem = $(this).addClass('has-click-menu');
+                var $menuLink = $menuItem.children('a').first();
+
+                $menuLink.attr({
+                    'aria-haspopup': 'true',
+                    'aria-expanded': 'false'
+                }).on('click.headerDropdown', function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    var shouldOpen = !$menuItem.hasClass('menu-open');
+                    closeHeaderMenus();
+                    if (shouldOpen) {
+                        $menuItem.addClass('menu-open');
+                        $menuLink.attr('aria-expanded', 'true');
+                    }
+                });
+            });
+
+            $headerMenus.find('li').has('> ul').each(function () {
+                var $menuItem = $(this);
+                if ($menuItem.parent().is($headerMenus)) return;
+
+                var $menuLink = $menuItem.children('a').first();
+                var $toggle = $('<button type="button" class="sf-submenu-toggle" aria-label="Afficher les sous-catégories" aria-expanded="false"><span aria-hidden="true"></span></button>');
+                $menuItem.addClass('has-click-submenu');
+                $menuLink.attr({
+                    'aria-haspopup': 'true',
+                    'aria-expanded': 'false'
+                }).after($toggle);
+
+                $toggle.on('click.headerDropdown', function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    var shouldOpen = !$menuItem.hasClass('submenu-open');
+                    $menuItem.siblings('.submenu-open')
+                        .removeClass('submenu-open')
+                        .children('a, .sf-submenu-toggle')
+                        .attr('aria-expanded', 'false');
+                    $menuItem.toggleClass('submenu-open', shouldOpen);
+                    $menuLink.attr('aria-expanded', String(shouldOpen));
+                    $toggle.attr({
+                        'aria-expanded': String(shouldOpen),
+                        'aria-label': shouldOpen ? 'Masquer les sous-catégories' : 'Afficher les sous-catégories'
+                    });
+                });
+            });
+
+            $(document).on('click.headerDropdown', function (event) {
+                if (!$(event.target).closest('.page_header .top-nav').length) closeHeaderMenus();
+            }).on('keydown.headerDropdown', function (event) {
+                if (event.key === 'Escape') {
+                    var $openLink = $headerMenus.children('li.menu-open').children('a').first();
+                    closeHeaderMenus();
+                    $openLink.trigger('focus');
+                }
             })
             
             // $('ul.sf-menu-side').superfish({
@@ -2160,4 +2226,61 @@
 
     });
 //end of IIFE function
+    function firstText(selector) {
+        var element = document.querySelector(selector);
+        return element && element.textContent.trim();
+    }
+
+    function ensureBannerCopy() {
+        var detailTitle = firstText("#produit-details .summary.entry-summary .product_title.entry-title");
+        var categoryTitle = firstText("#list-produits .title-tag");
+        var pageTitle = detailTitle || categoryTitle || firstText(".contact-page__banner h1") || firstText("main h1") || firstText("main h2");
+        var description = firstText("#produit-details .summary.entry-summary > div p") ||
+            firstText(".product-category-description") ||
+            firstText(".contact-page__banner-copy");
+
+        if (!description) {
+            var paragraphs = document.querySelectorAll("main p");
+            for (var paragraphIndex = 0; paragraphIndex < paragraphs.length; paragraphIndex++) {
+                if (paragraphs[paragraphIndex].textContent.trim() && !paragraphs[paragraphIndex].closest(".products-page-cta, .product-catalogue-details")) {
+                    description = paragraphs[paragraphIndex].textContent.trim();
+                    break;
+                }
+            }
+        }
+
+        document.querySelectorAll(".page_slider, .contact-page__banner, .partner-hero").forEach(function (banner) {
+            banner.querySelectorAll("table, .product-catalogue-details").forEach(function (table) {
+                table.remove();
+            });
+
+            if (banner.matches(".contact-page__banner")) {
+                var bannerCopy = banner.querySelector(".contact-page__banner-copy");
+                if (bannerCopy && !bannerCopy.textContent.trim() && description) bannerCopy.textContent = description;
+            }
+
+            banner.querySelectorAll(".intro_layer").forEach(function (layer) {
+                var heading = layer.querySelector("h1, h2, h3");
+                var copy = layer.querySelector("p");
+                if (heading && !heading.textContent.trim() && pageTitle) heading.textContent = pageTitle;
+                if (!copy && description) {
+                    copy = document.createElement("p");
+                    copy.className = "mt-3 x-light";
+                    layer.appendChild(copy);
+                }
+                if (copy && !copy.textContent.trim() && description) copy.textContent = description;
+            });
+        });
+    }
+
+    ensureBannerCopy();
+
+    var productPageTarget = document.querySelector("#produit-details .summary.entry-summary .product_title.entry-title, #list-produits .title-tag");
+    if (productPageTarget) {
+        var productInfoScript = document.createElement("script");
+        var currentScript = document.currentScript;
+        var scriptDirectory = currentScript ? currentScript.src.substring(0, currentScript.src.lastIndexOf("/") + 1) : "../assets_frontend/js/";
+        productInfoScript.src = scriptDirectory + "product-catalogue-info.js";
+        document.head.appendChild(productInfoScript);
+    }
 })(jQuery);
