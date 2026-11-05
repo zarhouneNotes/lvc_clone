@@ -311,6 +311,9 @@
         });
     });
 
+    window.LVC_PRODUCT_CATALOGUE_INFO = products;
+    window.LVC_PRODUCT_CATALOGUE_ALIASES = aliases;
+
     function makeElement(tag, className, text) {
         var element = document.createElement(tag);
         if (className) element.className = className;

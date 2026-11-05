@@ -678,6 +678,17 @@
         if ($().scrollbar) {
             $('[class*="scrollbar-"]').scrollbar();
         }
+        var $productsLink = $('.page_header .top-nav > ul.sf-menu > li > a').filter(function () {
+            return this.textContent.trim().toLocaleLowerCase('fr') === 'produits';
+        }).first();
+        if ($productsLink.length) {
+            var homeHref = $('.page_header .logo').attr('href') || '../index.html';
+            var productsHref = new URL('produits/index.html', new URL(homeHref, window.location.href)).href;
+            var $productsMenu = $productsLink.parent();
+            $productsMenu.children('ul, .mega-menu, .sf-submenu-toggle, .sf-menu-item-mobile-toggler, style').remove();
+            $productsMenu.removeClass('has-click-menu menu-open sfHover');
+            $productsLink.attr('href', productsHref).removeAttr('aria-haspopup aria-expanded').removeClass('sf-with-ul');
+        }
         if ($().superfish) {
             $('ul.sf-menu').not('.page_header .top-nav > ul.sf-menu').superfish({
                 popUpSelector: 'ul:not(.mega-menu ul), .mega-menu ',
