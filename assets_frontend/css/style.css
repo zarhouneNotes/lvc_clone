@@ -1148,7 +1148,22 @@ table tbody tr:hover,
         display: flex;
         width: 100%;
         align-items: center;
-        text-align: left;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .page_header.mobile-active .top-nav .sf-menu > li.nav-contact-item {
+        width: 100%;
+    }
+
+    .page_header.mobile-active .top-nav .sf-menu > li.nav-contact-item > a.nav-contact-link {
+        display: flex;
+        width: 100%;
+        min-height: 48px;
+        box-sizing: border-box;
+        justify-content: center;
+        margin: 8px 0;
+        text-align: center;
     }
 
     .page_header.mobile-active .top-nav .sf-menu > li.has-click-menu > a[aria-haspopup="true"] {
