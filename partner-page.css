@@ -579,9 +579,7 @@
     display: block;
     width: 100%;
     aspect-ratio: 1.35 / 1;
-    padding: 7px;
-    background: #EEF1F2;
-    object-fit: contain;
+    object-fit: cover;
 }
 
 .lvc-home-category-rail span {
