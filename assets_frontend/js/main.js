@@ -725,6 +725,8 @@
                     'aria-haspopup': 'true',
                     'aria-expanded': 'false'
                 }).on('click.headerDropdown', function (event) {
+                    var href = $menuLink.attr('href');
+                    if (href && href !== '#') return;
                     event.preventDefault();
                     event.stopPropagation();
 
@@ -809,15 +811,11 @@
 
         $('.sf-menu a').on('click', function () {
             var $this = $(this);
-            //If this is a local link or item with sumbenu - not toggling menu
-            if (($this.hasClass('sf-with-ul')) || !($this.attr('href').charAt(0) === '#')) {
-                return;
-            }
-            $this
-                .closest('.page_header')
-                .toggleClass('mobile-active')
-                .find('.toggle_menu')
-                .toggleClass('mobile-active');
+            if ($this.attr('aria-haspopup') === 'true' || $this.hasClass('sf-with-ul')) return;
+            var $header = $this.closest('.page_header');
+            if (!$header.hasClass('mobile-active')) return;
+            $header.removeClass('mobile-active').find('.toggle_menu').removeClass('mobile-active');
+            $('.page_topline').removeClass('index');
         });
         
         svgLoader()
@@ -2273,6 +2271,441 @@
         });
     }
 
+    function enhanceProductListing() {
+        var productList = document.querySelector("body:has(.product-section) ul.products");
+        var selection = document.querySelector("body:has(.product-section) .products-selection");
+        if (!productList || !selection) return;
+
+        productList.id = productList.id || "product-list-grid";
+
+        var searchForm = document.createElement("form");
+        searchForm.className = "mobile-product-toolbar";
+        searchForm.setAttribute("role", "search");
+        searchForm.addEventListener("submit", function (event) { event.preventDefault(); });
+
+        var searchField = document.createElement("label");
+        searchField.className = "mobile-product-search";
+        var searchIcon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        searchIcon.setAttribute("viewBox", "0 0 24 24");
+        searchIcon.setAttribute("aria-hidden", "true");
+        var searchPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        searchPath.setAttribute("d", "m20 20-4.2-4.2m1.7-5.3a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z");
+        searchIcon.appendChild(searchPath);
+        var searchInput = document.createElement("input");
+        searchInput.type = "search";
+        searchInput.className = "mobile-product-search__input";
+        searchInput.placeholder = "Produit ou référence...";
+        searchInput.setAttribute("aria-label", "Rechercher un produit ou une référence");
+        searchField.append(searchIcon, searchInput);
+
+        var filterButton = document.createElement("button");
+        filterButton.className = "mobile-product-filter";
+        filterButton.type = "button";
+        filterButton.setAttribute("aria-label", "Afficher les options de tri");
+        filterButton.setAttribute("aria-expanded", "false");
+        filterButton.setAttribute("aria-controls", "mobile-product-sort");
+        var filterIcon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        filterIcon.setAttribute("viewBox", "0 0 24 24");
+        filterIcon.setAttribute("aria-hidden", "true");
+        var filterPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        filterPath.setAttribute("d", "M4 7h8m4 0h4M4 17h4m4 0h8M12 4v6m-4 4v6");
+        filterIcon.appendChild(filterPath);
+        filterButton.appendChild(filterIcon);
+        searchForm.append(searchField, filterButton);
+
+        var sortPanel = document.createElement("div");
+        sortPanel.className = "mobile-product-sort";
+        sortPanel.id = "mobile-product-sort";
+        sortPanel.hidden = true;
+        var sortLabel = document.createElement("label");
+        sortLabel.htmlFor = "mobile-product-sort-select";
+        sortLabel.textContent = "Trier les produits";
+        var sortSelect = document.createElement("select");
+        sortSelect.id = sortLabel.htmlFor;
+        [
+            ["default", "Ordre du catalogue"],
+            ["name-asc", "Nom : A à Z"],
+            ["name-desc", "Nom : Z à A"]
+        ].forEach(function (optionData) {
+            var option = document.createElement("option");
+            option.value = optionData[0];
+            option.textContent = optionData[1];
+            sortSelect.appendChild(option);
+        });
+        sortPanel.append(sortLabel, sortSelect);
+
+        var mobileHeading = document.createElement("div");
+        mobileHeading.className = "mobile-products-heading";
+        var heading = document.createElement("h2");
+        heading.textContent = "Nos produits";
+        var viewAll = document.createElement("a");
+        viewAll.href = "#" + productList.id;
+        viewAll.append(document.createTextNode("Voir tout "), document.createTextNode("→"));
+        mobileHeading.append(heading, viewAll);
+
+        var resultStatus = document.createElement("p");
+        resultStatus.className = "mobile-product-results";
+        resultStatus.setAttribute("role", "status");
+        resultStatus.setAttribute("aria-live", "polite");
+        var emptyState = document.createElement("p");
+        emptyState.className = "mobile-product-empty";
+        emptyState.textContent = "Aucun produit ne correspond à votre recherche.";
+        emptyState.hidden = true;
+
+        selection.append(searchForm, sortPanel, resultStatus);
+        productList.before(mobileHeading);
+        productList.after(emptyState);
+
+        var products = Array.from(productList.querySelectorAll(":scope > li.product"));
+        var originalOrder = products.slice();
+
+        function positionProductCardDetails() {
+            productList.querySelectorAll(".product-card__details").forEach(function (details) {
+                var card = details.closest("li.product");
+                var copyContainer = card && card.querySelector(".product-wrap .wrap-right");
+                if (copyContainer && details.parentElement !== copyContainer) copyContainer.appendChild(details);
+            });
+        }
+
+        var productCardObserver = new MutationObserver(positionProductCardDetails);
+        productCardObserver.observe(productList, { childList: true, subtree: true });
+        positionProductCardDetails();
+
+        function normalize(value) {
+            return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase();
+        }
+
+        function updateListing() {
+            var query = normalize(searchInput.value.trim());
+            var visibleCount = 0;
+            products.forEach(function (product) {
+                var matches = !query || normalize(product.textContent).indexOf(query) !== -1;
+                product.hidden = !matches;
+                if (matches) visibleCount++;
+            });
+
+            var sortedProducts = products.slice();
+            if (sortSelect.value === "name-asc" || sortSelect.value === "name-desc") {
+                sortedProducts.sort(function (first, second) {
+                    var comparison = first.querySelector(".woocommerce-loop-product__title").textContent.trim()
+                        .localeCompare(second.querySelector(".woocommerce-loop-product__title").textContent.trim(), "fr");
+                    return sortSelect.value === "name-asc" ? comparison : -comparison;
+                });
+            } else {
+                sortedProducts = originalOrder.slice();
+            }
+            sortedProducts.forEach(function (product) { productList.appendChild(product); });
+
+            resultStatus.textContent = visibleCount + (visibleCount === 1 ? " produit" : " produits");
+            emptyState.hidden = visibleCount !== 0;
+        }
+
+        searchInput.addEventListener("input", updateListing);
+        sortSelect.addEventListener("change", updateListing);
+        filterButton.addEventListener("click", function () {
+            var isOpen = !sortPanel.hidden;
+            sortPanel.hidden = isOpen;
+            filterButton.setAttribute("aria-expanded", String(!isOpen));
+        });
+        updateListing();
+    }
+
+    function enhanceProductDetail() {
+        var productSection = document.querySelector("#produit-details");
+        var product = productSection && productSection.querySelector(".product.type-product");
+        if (!product || document.querySelector(".product-detail-page")) return;
+
+        var gallerySource = product.querySelector(".images");
+        var summary = product.querySelector(".summary.entry-summary");
+        var sourceTitle = summary && summary.querySelector(".product_title.entry-title");
+        if (!gallerySource || !summary || !sourceTitle) {
+            console.error("Could not initialize the product detail layout: required product content is missing.");
+            return;
+        }
+
+        var productName = sourceTitle.textContent.trim();
+        var images = Array.from(gallerySource.querySelectorAll("img")).map(function (image) {
+            var link = image.closest("a");
+            var imageContainer = image.closest("[data-thumb]");
+            return {
+                src: image.getAttribute("data-large_image") || image.getAttribute("data-src") ||
+                    (link && link.getAttribute("href")) || image.getAttribute("src"),
+                thumb: imageContainer && imageContainer.getAttribute("data-thumb"),
+                alt: image.getAttribute("alt") && !/^[a-f0-9]{8,}$/i.test(image.getAttribute("alt"))
+                    ? image.getAttribute("alt")
+                    : productName
+            };
+        }).filter(function (image, index, list) {
+            return image.src && list.findIndex(function (item) { return item.src === image.src; }) === index;
+        });
+
+        var catalogueList = summary.querySelector(".list-catalogues");
+        var documentLinks = catalogueList ? Array.from(catalogueList.querySelectorAll("a")) : [];
+        var page = document.createElement("main");
+        page.className = "product-detail-page";
+        page.id = "produit-details";
+        var wrap = document.createElement("div");
+        wrap.className = "product-detail-wrap";
+
+        var breadcrumb = document.createElement("nav");
+        breadcrumb.className = "product-breadcrumb";
+        breadcrumb.setAttribute("aria-label", "Fil d’Ariane");
+        var homeLink = document.createElement("a");
+        homeLink.href = "../index.html";
+        homeLink.textContent = "Accueil";
+        var categoryCrumb = document.createElement("span");
+        categoryCrumb.className = "product-breadcrumb__category";
+        categoryCrumb.textContent = "Produits";
+        var currentCrumb = document.createElement("span");
+        currentCrumb.textContent = productName;
+        currentCrumb.setAttribute("aria-current", "page");
+        [homeLink, categoryCrumb, currentCrumb].forEach(function (item, index) {
+            if (index) {
+                var separator = document.createElement("span");
+                separator.setAttribute("aria-hidden", "true");
+                separator.textContent = "›";
+                breadcrumb.appendChild(separator);
+            }
+            breadcrumb.appendChild(item);
+        });
+
+        var layout = document.createElement("div");
+        layout.className = "product-detail-layout";
+        var gallery = document.createElement("div");
+        gallery.className = "product-gallery";
+        var galleryMain = document.createElement("div");
+        galleryMain.className = "product-gallery__main";
+        var badge = document.createElement("span");
+        badge.className = "product-gallery__badge";
+        badge.textContent = "Produits LVC";
+        galleryMain.appendChild(badge);
+
+        var mainLink = document.createElement("a");
+        mainLink.className = "product-gallery__main-link";
+        mainLink.setAttribute("aria-label", "Voir l’image du produit en grand");
+        var mainImage = document.createElement("img");
+        mainImage.alt = productName;
+        mainLink.appendChild(mainImage);
+        galleryMain.appendChild(mainLink);
+
+        var thumbnails = document.createElement("div");
+        thumbnails.className = "product-gallery__thumbs";
+        thumbnails.setAttribute("role", "group");
+        thumbnails.setAttribute("aria-label", "Images du produit");
+
+        function selectImage(image, button) {
+            mainLink.href = image.src;
+            mainImage.src = image.src;
+            mainImage.alt = image.alt;
+            thumbnails.querySelectorAll(".product-gallery__thumb").forEach(function (item) {
+                var active = item === button;
+                item.classList.toggle("is-active", active);
+                item.setAttribute("aria-pressed", String(active));
+            });
+        }
+
+        images.forEach(function (image, index) {
+            var button = document.createElement("button");
+            button.className = "product-gallery__thumb";
+            button.type = "button";
+            button.setAttribute("aria-label", "Voir l’image " + (index + 1) + " du produit");
+            button.setAttribute("aria-pressed", "false");
+            var thumbnail = document.createElement("img");
+            thumbnail.src = image.thumb || image.src;
+            thumbnail.alt = "";
+            button.appendChild(thumbnail);
+            button.addEventListener("click", function () { selectImage(image, button); });
+            thumbnails.appendChild(button);
+            if (index === 0) selectImage(image, button);
+        });
+
+        if (!images.length) {
+            var imageFallback = document.createElement("p");
+            imageFallback.className = "product-gallery__fallback";
+            imageFallback.textContent = "Image du produit non disponible.";
+            galleryMain.appendChild(imageFallback);
+        }
+
+        gallery.appendChild(galleryMain);
+        if (images.length) gallery.appendChild(thumbnails);
+
+        var category = document.createElement("p");
+        category.className = "product-summary__category";
+        category.textContent = "Produits LVC";
+        var title = document.createElement("h1");
+        title.className = sourceTitle.className;
+        title.id = "product-title";
+        title.textContent = productName;
+        sourceTitle.replaceWith(title);
+        summary.classList.add("product-summary");
+
+        var description = document.createElement("div");
+        description.className = "product-summary__description";
+        Array.from(summary.querySelectorAll("p")).forEach(function (paragraph) {
+            description.appendChild(paragraph);
+        });
+
+        Array.from(summary.children).forEach(function (child) {
+            if (child !== title && !child.contains(catalogueList)) child.remove();
+        });
+
+        var metadata = document.createElement("table");
+        metadata.className = "product-specifications";
+        metadata.setAttribute("aria-label", "Informations produit");
+        var metadataBody = document.createElement("tbody");
+
+        function setMetadataRows(rows) {
+            metadataBody.replaceChildren();
+            rows.forEach(function (rowData) {
+                var row = document.createElement("tr");
+                var label = document.createElement("th");
+                label.scope = "row";
+                label.textContent = rowData[0];
+                var value = document.createElement("td");
+                value.textContent = rowData[1];
+                row.append(label, value);
+                metadataBody.appendChild(row);
+            });
+        }
+
+        setMetadataRows([
+            ["Catégorie", "Produits LVC"],
+            ["Documentation", documentLinks.length ? documentLinks.length + " fiche(s) technique(s)" : "Sur demande"],
+            ["Disponibilité", "Nous consulter"]
+        ]);
+        metadata.appendChild(metadataBody);
+
+        var featureList = document.createElement("ul");
+        featureList.className = "product-features";
+        featureList.setAttribute("aria-label", "Caractéristiques du produit");
+
+        function updateFeatures(extraText) {
+            var searchable = (productName + " " + description.textContent + " " + (extraText || "")).toLocaleLowerCase();
+            var candidates = [
+                { pattern: /acoust|phonique|bruit/, label: "Absorption acoustique", icon: "A" },
+                { pattern: /feu|incend|flamme/, label: "Résistance au feu", icon: "F" },
+                { pattern: /humid|hydro|étanche|etanche|eau/, label: "Résiste à l’humidité", icon: "H" },
+                { pattern: /environnement|recycl|écolog|ecolog/, label: "Respectueux de l’environnement", icon: "E" },
+                { pattern: /thermi|isolation/, label: "Isolation thermique", icon: "T" }
+            ];
+            var selected = candidates.filter(function (candidate) {
+                return candidate.pattern.test(searchable);
+            }).slice(0, 4);
+            var defaults = [
+                { label: "Conseil technique", icon: "C" },
+                { label: "Devis sur demande", icon: "D" },
+                { label: "Pour vos projets bâtiment", icon: "P" },
+                { label: "Gamme LVC", icon: "L" }
+            ];
+            defaults.forEach(function (candidate) {
+                if (selected.length < 4 && !selected.some(function (item) { return item.label === candidate.label; })) selected.push(candidate);
+            });
+            featureList.replaceChildren();
+            selected.forEach(function (item) {
+                var feature = document.createElement("li");
+                var icon = document.createElement("span");
+                icon.setAttribute("aria-hidden", "true");
+                icon.textContent = item.icon;
+                feature.append(icon, document.createTextNode(item.label));
+                featureList.appendChild(feature);
+            });
+        }
+
+        updateFeatures("");
+
+        var actions = document.createElement("div");
+        actions.className = "product-summary__actions";
+        var quote = document.createElement("a");
+        quote.className = "product-button";
+        quote.href = "../contact.html?produit=" + encodeURIComponent(productName);
+        quote.append(document.createTextNode("Demander un devis "), document.createTextNode("→"));
+        var documentsButton = document.createElement("a");
+        documentsButton.className = "product-button product-button--outline";
+        documentsButton.href = "#product-documents";
+        documentsButton.textContent = "Fiches techniques";
+        actions.append(quote, documentsButton);
+
+        summary.replaceChildren(category, title, description, featureList, actions, metadata);
+        layout.append(gallery, summary);
+
+        var documents = document.createElement("section");
+        documents.className = "product-documents";
+        documents.id = "product-documents";
+        documents.setAttribute("aria-labelledby", "product-documents-title");
+        var documentsTitle = document.createElement("h2");
+        documentsTitle.id = "product-documents-title";
+        documentsTitle.textContent = "Fiches techniques";
+        documents.appendChild(documentsTitle);
+
+        if (catalogueList) {
+            catalogueList.id = "product-catalogue-documents";
+            catalogueList.querySelectorAll("li").forEach(function (item) {
+                item.className = "product-document-item";
+                var link = item.querySelector("a");
+                if (!link) return;
+                var fileName = link.textContent.trim().replace(/\.pdf$/i, "");
+                var displayName = fileName.toLocaleLowerCase().startsWith(productName.toLocaleLowerCase())
+                    ? fileName.slice(productName.length).replace(/^[\s-]+/, "")
+                    : fileName;
+                var icon = document.createElement("span");
+                icon.className = "product-document__icon";
+                icon.setAttribute("aria-hidden", "true");
+                icon.textContent = "PDF";
+                var copy = document.createElement("span");
+                var name = document.createElement("strong");
+                name.textContent = displayName || fileName;
+                var details = document.createElement("small");
+                details.textContent = "Fiche technique · Télécharger";
+                copy.append(name, details);
+                link.replaceChildren(icon, copy);
+                item.replaceChildren(link);
+                link.className = "product-document";
+                link.setAttribute("aria-label", "Télécharger " + fileName + ".pdf");
+                link.setAttribute("rel", "noopener");
+            });
+            documents.appendChild(catalogueList);
+        } else {
+            var noDocuments = document.createElement("p");
+            noDocuments.className = "product-documents__empty";
+            noDocuments.textContent = "Les fiches techniques ne sont pas disponibles en ligne. Contactez notre équipe pour en savoir plus.";
+            documents.appendChild(noDocuments);
+        }
+
+        wrap.append(breadcrumb, layout, documents);
+        page.appendChild(wrap);
+        productSection.replaceWith(page);
+
+        var updateCatalogueDetails = function () {
+            var info = summary.querySelector(".product-catalogue-details");
+            if (!info || info.hidden) return;
+            var sourceRows = Array.from(info.querySelectorAll(".product-catalogue-details__table tr"));
+            var rowValues = sourceRows.map(function (row) {
+                var cells = row.querySelectorAll("th, td");
+                return cells.length > 1 ? [cells[0].textContent.trim(), cells[1].textContent.trim()] : null;
+            }).filter(Boolean);
+            if (!rowValues.length) return;
+
+            var rows = rowValues.filter(function (row) {
+                return ["Catégorie", "Sous-catégorie", "Marque", "Caractéristiques techniques", "Page du catalogue"].indexOf(row[0]) !== -1;
+            }).slice(0, 4);
+            rows.push(["Disponibilité", "Nous consulter"]);
+            setMetadataRows(rows);
+            var categoryValue = rowValues.find(function (row) { return row[0] === "Catégorie"; });
+            if (categoryValue) {
+                category.textContent = categoryValue[1];
+                categoryCrumb.textContent = categoryValue[1];
+                badge.textContent = categoryValue[1];
+            }
+            updateFeatures(info.textContent);
+            info.hidden = true;
+        };
+        var catalogueObserver = new MutationObserver(updateCatalogueDetails);
+        catalogueObserver.observe(summary, { childList: true, subtree: true });
+        updateCatalogueDetails();
+    }
+
+    enhanceProductDetail();
+    enhanceProductListing();
     ensureBannerCopy();
 
     var productPageTarget = document.querySelector("#produit-details .summary.entry-summary .product_title.entry-title, #list-produits .title-tag");

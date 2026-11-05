@@ -188,6 +188,8 @@
     };
 
     var aliases = {
+        "dalleenlainederoche": "laine de roche",
+        "dalleenlainedeverre": "laine de verre",
         "dalleenmetal": "dalle metallique",
         "plaqueba13standard": "plaque standard",
         "plaqueba13hydrofuge": "plaque hydrofuge",
@@ -316,6 +318,50 @@
         return element;
     }
 
+    document.querySelectorAll("body:has(.product-section) ul.products > li.product").forEach(function (card) {
+        var title = card.querySelector(".woocommerce-loop-product__title");
+        if (!title || card.querySelector(".product-card__details")) return;
+
+        var titleKey = normalize(title.textContent);
+        var productKey = normalize(aliases[titleKey] || titleKey);
+        var product = products.find(function (item) {
+            return normalize(item.name) === productKey;
+        });
+        if (!product) {
+            var categoryTitle = document.querySelector("#list-produits .title-tag");
+            product = {
+                brand: "",
+                description: "",
+                characteristics: [],
+                subcategory: "",
+                category: categoryTitle ? categoryTitle.textContent.trim() : "Produits"
+            };
+        }
+
+        var details = makeElement("div", "product-card__details");
+        if (product.brand) details.appendChild(makeElement("p", "product-card__brand", product.brand));
+        details.appendChild(makeElement(
+            "p",
+            "product-card__description",
+            product.description || "Consultez la fiche pour les caractéristiques et la disponibilité."
+        ));
+
+        var features = makeElement("ul", "product-card__features");
+        var featureLabels = product.characteristics.length
+            ? product.characteristics.slice(0, 2).map(function (item) { return item[0] + " : " + item[1]; })
+            : [product.subcategory || product.category];
+        featureLabels.forEach(function (label) {
+            features.appendChild(makeElement("li", "", label));
+        });
+        details.appendChild(features);
+
+        var copyContainer = card.querySelector(".product-wrap .wrap-right") || title.parentElement;
+        copyContainer.appendChild(details);
+
+        var action = card.querySelector(".product_type_simple");
+        if (action) action.setAttribute("aria-label", "Voir le produit " + title.textContent.trim());
+    });
+
     function makeProductSection(product, categoryFallback) {
         var sectionClass = "product-catalogue-details" + (categoryFallback ? " product-catalogue-details--category" : "");
         var section = makeElement("section", sectionClass);
@@ -349,7 +395,7 @@
         var quote = makeElement("a", "product-catalogue-details__button product-catalogue-details__button--primary", "Demander un devis");
         quote.href = "../contact.html?produit=" + encodeURIComponent(product.name);
         quote.setAttribute("aria-label", "Demander un devis pour " + product.name);
-        var documents = document.querySelector(".summary.entry-summary .list-catalogues");
+        var documents = document.querySelector("#product-documents .list-catalogues, .summary.entry-summary .list-catalogues");
         var catalogue = makeElement("a", "product-catalogue-details__button", documents ? "Consulter les fiches techniques" : "Voir les catalogues");
         catalogue.href = documents ? "#product-catalogue-documents" : "../espace-pro.html";
         catalogue.setAttribute("aria-label", "Consulter les documents pour " + product.name);

@@ -36,6 +36,11 @@ body {
 	position: relative;
 }
 
+body,
+body :not(i):not(svg):not([class^="fa"]):not([class*=" fa-"]):not([class^="ti-"]):not([class*=" ti-"]):not([class^="ico-"]):not([class*=" ico-"]):not(.icon):not(.icon-fonts):not(.icon-styled):not([class^="icon-"]):not([class*=" icon-"]) {
+	font-family: "Roboto", Arial, sans-serif !important;
+}
+
 .social-icons,
 .top-includes > li:has(.social-icons),
 #myWhatsApp {

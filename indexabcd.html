@@ -46,7 +46,7 @@
 <link rel="stylesheet" href="partner-page.css">
 <title>LVC DISTRIBUTION SARL</title></head>
 
-<body>
+<body class="lvc-home">
     <div class="preloader">
 		<div class="preloader_image"></div>
 </div>    <!-- search modal -->
@@ -700,37 +700,108 @@
             <span class="toggle_menu"><span></span></span>
         </div>
     </header>
-    <section class="partner-hero" aria-labelledby="partner-hero-title">
-        <img class="partner-hero-image" src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&amp;fit=crop&amp;w=2000&amp;q=85" alt="Chantier de construction en activité" fetchpriority="high">
+    <section class="partner-hero lvc-home-hero" aria-labelledby="partner-hero-title">
+        <img class="partner-hero-image" src="storage/projects/October2021/2KdoafN3tu7y6eONsNBb-cropped.jpg" alt="Façade vitrée d'un bâtiment professionnel" fetchpriority="high">
         <div class="partner-hero-content">
-            <p class="partner-eyebrow">LVC DISTRIBUTION · Partenaires de confiance</p>
-            <h1 id="partner-hero-title">Construisons la confiance, ensemble.</h1>
-            <p>Des partenaires engagés, des solutions éprouvées et une expertise de terrain au service de chaque projet.</p>
-            <a class="partner-hero-link" href="#references">Découvrir nos partenaires</a>
+            <p class="partner-eyebrow">Bâtir des espaces durables</p>
+            <h1 id="partner-hero-title">Votre partenaire en <span>solutions techniques</span> pour le bâtiment</h1>
+            <p>LVC Distribution vous accompagne avec une gamme complète de produits et solutions pour le second œuvre, l’isolation, l’étanchéité, les plafonds, les cloisons et les revêtements.</p>
+            <div class="lvc-home-hero-actions">
+                <a class="partner-hero-link partner-hero-link--primary" href="#home-categories">Nos solutions <span aria-hidden="true">→</span></a>
+                <a class="partner-hero-link" href="contact.html">Demander un devis</a>
+            </div>
+            <div class="lvc-home-hero-features" aria-label="Nos engagements">
+                <span><i class="fas fa-cube" aria-hidden="true"></i> Produits de qualité</span>
+                <span><i class="fas fa-truck" aria-hidden="true"></i> Stock disponible</span>
+                <span><i class="fas fa-headset" aria-hidden="true"></i> Accompagnement technique</span>
+                <span><i class="fas fa-route" aria-hidden="true"></i> Livraison partout au Maroc</span>
+            </div>
         </div>
+        <aside class="lvc-home-hero-index" aria-label="Nos domaines d’expertise">
+            <span>Cloisons</span><span>Plafonds</span><span>Isolation</span><span>Étanchéité</span>
+            <span>Revêtements</span><span>Faux planchers</span><span>Protection incendie</span><span>Trappes de visite</span>
+        </aside>
+        <p class="lvc-home-hero-signoff">Mieux construire ensemble</p>
     </section>
+
+<section class="lvc-home-section lvc-home-categories" id="home-categories" aria-labelledby="home-categories-title">
+    <div class="container">
+        <div class="lvc-home-section-heading">
+            <p class="partner-eyebrow">Nos solutions</p>
+            <h2 id="home-categories-title">Une gamme complète pour tous <span>vos projets</span></h2>
+        </div>
+        <div class="lvc-home-category-rail">
+            <a href="produits/cloisons-et-contre-cloisons2e5f.html?id=22"><img src="assets_frontend/imgs/cloisons2.svg" alt="" loading="lazy"><span>Cloisons &amp; doublages</span><b aria-hidden="true">→</b></a>
+            <a href="produits/faux-plafond-modulairee5cc.html"><img src="assets_frontend/imgs/faux-plafonds.svg" alt="" loading="lazy"><span>Faux plafonds</span><b aria-hidden="true">→</b></a>
+            <a href="produits/isolationsf62c.html?id=36"><img src="assets_frontend/imgs/isolations.png" alt="" loading="lazy"><span>Isolation thermique</span><b aria-hidden="true">→</b></a>
+            <a href="produits/isolationsf62c.html?id=36"><img src="assets_frontend/imgs/cabines-acoustiques.png" alt="" loading="lazy"><span>Isolation acoustique</span><b aria-hidden="true">→</b></a>
+            <a href="produits/etancheitee371.html?id=18"><img src="assets_frontend/imgs/etancheite.svg" alt="" loading="lazy"><span>Étanchéité</span><b aria-hidden="true">→</b></a>
+            <a href="produits/revetement-de-sol-souple-en-pvc-et-vinyle4944.html?id=48"><img src="assets_frontend/imgs/moquette.png" alt="" loading="lazy"><span>Revêtements sols &amp; murs</span><b aria-hidden="true">→</b></a>
+            <a href="produits/planchers-techniquesab5e.html?id=40"><img src="assets_frontend/imgs/planchers-techniques.svg" alt="" loading="lazy"><span>Faux planchers</span><b aria-hidden="true">→</b></a>
+            <a href="produits/trappes-de-visite3a9f.html?id=6"><img src="assets_frontend/imgs/cabines-sanitaires.png" alt="" loading="lazy"><span>Protection incendie</span><b aria-hidden="true">→</b></a>
+            <a href="produits/trappes-de-visite3a9f.html?id=6"><img src="assets_frontend/imgs/cloisons-mobiles.png" alt="" loading="lazy"><span>Trappes de visite</span><b aria-hidden="true">→</b></a>
+        </div>
+    </div>
+</section>
+
+<section class="lvc-home-section lvc-home-sectors" aria-labelledby="home-sectors-title">
+    <div class="container">
+        <div class="lvc-home-section-heading">
+            <p class="partner-eyebrow">Votre expertise, notre engagement</p>
+            <h2 id="home-sectors-title">Des solutions adaptées à <span>chaque secteur</span></h2>
+        </div>
+        <div class="lvc-home-sector-grid">
+            <a href="projects.html"><img src="storage/projects/October2021/2KdoafN3tu7y6eONsNBb-cropped.jpg" alt="Immeuble de bureaux contemporain" loading="lazy"><span>Bureaux<br>&amp; tertiaire</span></a>
+            <a href="projects.html"><img src="storage/projects/October2021/62DEJqkpVwryCzrArPdf-cropped.jpg" alt="Hôtel et espaces d’accueil" loading="lazy"><span>Hôtels<br>&amp; hôtellerie</span></a>
+            <a href="projects.html"><img src="storage/projects/October2021/9TMOxwuGF4MzAeLnqmVC-cropped.jpg" alt="Centre commercial vitré" loading="lazy"><span>Centres<br>commerciaux</span></a>
+            <a href="projects.html"><img src="storage/projects/October2021/20Ka4CbIwrFFD9gzXPGT-cropped.jpg" alt="Bâtiment industriel" loading="lazy"><span>Bâtiments<br>industriels</span></a>
+            <a href="projects.html"><img src="storage/projects/October2021/fk0FD8AglC2uM4TP6YQw-cropped.jpg" alt="Résidence et espace paysager" loading="lazy"><span>Résidentiel</span></a>
+            <a href="projects.html"><img src="storage/projects/October2021/3mLmTKcoutAZied6dgeZ-cropped.jpg" alt="Entrée d’un établissement de santé" loading="lazy"><span>Santé<br>&amp; hôpitaux</span></a>
+            <a href="projects.html"><img src="storage/projects/October2021/ILlD387Wrs0oJ7Yf867A-cropped.jpeg" alt="Bâtiment d’enseignement" loading="lazy"><span>Éducation</span></a>
+            <a href="projects.html"><img src="storage/projects/October2021/dsOluDpO3P7bZXj2BmMd-cropped.jpeg" alt="Bâtiment public avec grande verrière" loading="lazy"><span>Bâtiments<br>publics</span></a>
+        </div>
+    </div>
+</section>
 
 <section id="why-us" aria-labelledby="why-us-title">
     <div class="container">
         <div class="partner-section-heading">
-            <p class="partner-eyebrow">Notre engagement</p>
-            <h2 id="why-us-title">Pourquoi nous choisir</h2>
-            <p>Un accompagnement fiable, de la sélection des matériaux à la réalisation de vos projets.</p>
+            <p class="partner-eyebrow">LVC Distribution</p>
+            <h2 id="why-us-title">Pourquoi choisir LVC Distribution ?</h2>
+            <p>Plus qu’un distributeur, un partenaire de confiance pour vos projets.</p>
         </div>
         <div class="why-us-grid">
             <article>
-                <h3>Des partenaires reconnus</h3>
-                <p>Nous collaborons avec des marques de référence pour proposer des produits fiables et durables.</p>
+                <i class="far fa-gem" aria-hidden="true"></i>
+                <h3>Expertise technique</h3>
+                <p>Des spécialistes à votre écoute.</p>
             </article>
             <article>
-                <h3>Une expertise de terrain</h3>
-                <p>Nos équipes vous orientent vers les solutions adaptées aux contraintes de chaque chantier.</p>
+                <i class="fas fa-cog" aria-hidden="true"></i>
+                <h3>Large gamme de produits</h3>
+                <p>Les meilleures marques du marché.</p>
             </article>
             <article>
-                <h3>Un suivi à vos côtés</h3>
-                <p>Disponibilité, conseil et accompagnement pour faire avancer vos projets en toute confiance.</p>
+                <i class="far fa-handshake" aria-hidden="true"></i>
+                <h3>Accompagnement sur chantier</h3>
+                <p>De l’étude à la réalisation.</p>
+            </article>
+            <article>
+                <i class="fas fa-chart-bar" aria-hidden="true"></i>
+                <h3>Disponibilité &amp; réactivité</h3>
+                <p>Une logistique optimisée partout au Maroc.</p>
             </article>
         </div>
+    </div>
+</section>
+
+<section class="lvc-home-stats" aria-label="LVC Distribution en chiffres">
+    <div class="container">
+        <div><strong>+ 1 000</strong><span>Références produits</span></div>
+        <div><strong>+ 500</strong><span>Clients professionnels</span></div>
+        <div><strong>+ 50</strong><span>Grands projets réalisés</span></div>
+        <div><strong>+ 10</strong><span>Années d’expérience</span></div>
+        <blockquote>“ La qualité de nos solutions au service de vos ambitions. ”</blockquote>
     </div>
 </section>
 
@@ -802,7 +873,7 @@
             <div class="references-ask">
                 <a href="#" class="medium text-uppercase">Distributeur des produits de second oeuvre</a>
             </div>
-            <h3 class="section-title text-uppercase text-center white mt-3 mb-5" style="position: relative;"><span style="position: relative;">Nos partenaires</span></h3>
+            <h3 class="section-title text-uppercase text-center white mt-3 mb-5" style="position: relative;"><span style="position: relative;">Nos marques partenaires</span></h3>
             <div class="row justify-content-around align-items-center">
                                     <!---->
                         <div class="col-12 col-sm-auto my-3 text-center logo"><img src="storage/references/June2021/unxK1X523AZhCLwzEoO8.jpg" alt="Lindner"></div>
@@ -887,6 +958,18 @@
         </div>
     </section>
 <!-- End Références -->
+
+<section class="lvc-home-cta" aria-labelledby="lvc-home-cta-title">
+    <div class="lvc-home-cta__inner">
+        <div>
+            <p class="partner-eyebrow">Un projet ?</p>
+            <h2 id="lvc-home-cta-title">Notre équipe est à votre écoute</h2>
+            <p>Contactez-nous pour une étude personnalisée et un devis rapide.</p>
+        </div>
+        <a class="lvc-home-cta__button" href="contact.html">Demander un devis <span aria-hidden="true">→</span></a>
+        <a class="lvc-home-cta__whatsapp" href="https://wa.me/212661704947">Nous contacter sur WhatsApp</a>
+    </div>
+</section>
     
      <!-- Références -->
 <section id="nos_clients" class="my-2 py-5">
