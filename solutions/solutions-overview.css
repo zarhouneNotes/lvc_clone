@@ -505,7 +505,7 @@
     }
 
     .solutions-hero h1 {
-        font-size: clamp(32px, 8.5vw, 42px);
+        font-size: clamp(28px, 7.5vw, 36px);
     }
 
     .solutions-hero__content > p:not(.solutions-eyebrow) {

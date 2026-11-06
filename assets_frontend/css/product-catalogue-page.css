@@ -625,7 +625,7 @@
 
     .products-hero h1 {
         max-width: 520px;
-        font-size: clamp(34px, 9vw, 44px);
+        font-size: clamp(29px, 7.5vw, 38px);
     }
 
     .products-hero__description {
@@ -768,7 +768,8 @@
 
     .catalogue-product-card__image-link {
         height: auto;
-        min-height: 140px;
+        min-height: 0;
+        aspect-ratio: 1 / 1;
     }
 
     .catalogue-product-card__content {
@@ -921,13 +922,16 @@
 
     .catalogue-product-card__image-link {
         height: auto;
-        min-height: 150px;
+        min-height: 0;
+        aspect-ratio: 1 / 1;
         margin: 7px 0 7px 7px;
         border-radius: 5px;
         background: #f0f2f3;
     }
 
     .catalogue-product-card__image-link img {
+        display: block;
+        height: 100%;
         mix-blend-mode: multiply;
     }
 

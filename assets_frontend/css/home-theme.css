@@ -900,7 +900,7 @@ h1, h2, h3, h4, h5, h6,
     }
 
     .lvc-hero h1 {
-        font-size: 46px;
+        font-size: clamp(30px, 8vw, 42px);
     }
 
     .lvc-hero-side {

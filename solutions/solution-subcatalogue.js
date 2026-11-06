@@ -133,6 +133,14 @@
     header.after(hero);
     pageSlider.remove();
 
+    document.querySelectorAll('ul.products > li.product').forEach(function (productCard) {
+        const details = productCard.querySelector('.product-card__details');
+        const copyContainer = productCard.querySelector('.product-wrap .wrap-right');
+        if (details && copyContainer && details.parentElement !== copyContainer) {
+            copyContainer.append(details);
+        }
+    });
+
     const subSolutions = solutionsByPage[currentPage];
     const productSection = document.getElementById('list-produits');
     if (!productSection) {
@@ -158,6 +166,43 @@
         '../storage/projects/October2021/lQtYzDlj4aYk3saMrTyV-cropped.webp',
         '../storage/projects/October2021/fk0FD8AglC2uM4TP6YQw-cropped.jpg'
     ];
+    const subSolutionImages = {
+        '9-faux-plafond-modulaire.html': 'https://i.pinimg.com/1200x/72/39/8c/72398cc34d98c6e9fa8b6b1b8fedba9b.jpg',
+        '10-faux-plafond-continu.html': 'https://i.pinimg.com/736x/97/cf/66/97cf66c5a1886a6df0dc1fa7c06c427a.jpg',
+        '77-faux-plafond-monolithique.html': 'https://www.reso.fr/wp-content/uploads/2019/07/mono-acoustic-2.jpg',
+        '54-isolations.html': 'https://i.pinimg.com/736x/91/bf/d5/91bfd569ed6149329457ebff490ce878.jpg',
+        '42-etancheite.html': 'https://i.pinimg.com/1200x/36/fd/69/36fd69b1ade785902387255ad51f0d11.jpg',
+        '34-plaques.html': 'https://i.pinimg.com/736x/04/fe/39/04fe399abd40aa7d7925ef307d95224a.jpg',
+        '35-ossatures.html': 'https://www.mexisteel.com/fr/wp-content/uploads/2018/10/MAISON-AVEC-ETAGE-16.jpg',
+        '37-accessoires.html': 'https://i.pinimg.com/1200x/fa/26/30/fa2630319b28e65f6c908c693fb05b34.jpg',
+        '38-enduits-et-colles.html': 'https://i.pinimg.com/736x/9a/23/91/9a23914e628abd19f3e10efd873e72b4.jpg',
+        '44-isolation.html': 'https://i.pinimg.com/736x/91/bf/d5/91bfd569ed6149329457ebff490ce878.jpg',
+        '11-plaques.html': 'https://i.pinimg.com/736x/04/fe/39/04fe399abd40aa7d7925ef307d95224a.jpg',
+        '12-ossatures.html': 'https://www.mexisteel.com/fr/wp-content/uploads/2018/10/MAISON-AVEC-ETAGE-16.jpg',
+        '13-accessoires.html': 'https://i.pinimg.com/1200x/fa/26/30/fa2630319b28e65f6c908c693fb05b34.jpg',
+        '14-enduits-et-colles.html': 'https://i.pinimg.com/736x/9a/23/91/9a23914e628abd19f3e10efd873e72b4.jpg',
+        '45-isolations.html': 'https://i.pinimg.com/736x/91/bf/d5/91bfd569ed6149329457ebff490ce878.jpg',
+        '15-carreaux-de-platre.html': 'https://i.pinimg.com/1200x/9d/69/37/9d693788139a889e71310512f9b9fa48.jpg',
+        '71-structure-lsf-light-steel-framing.html': 'https://i.pinimg.com/1200x/23/44/63/234463ec8fe29cd9ba5a96021ddc83c1.jpg',
+        '19-dalles-planchers-techniques.html': 'https://i.pinimg.com/1200x/4b/e1/87/4be1872821eabae8871568ec5f576ae7.jpg',
+        '56-structure-planchers-techniques.html': 'https://i.pinimg.com/1200x/ea/d1/7f/ead17fd9d22e658e604879a1c44f87fd.jpg',
+        '57-colles-planchers-techniques.html': 'https://i.pinimg.com/1200x/5f/9a/83/5f9a83bf79dc7947276c0c808b1b0340.jpg',
+        '46-moquette.html': 'https://i.pinimg.com/736x/4e/d5/c0/4ed5c0850c5dd750e657810a4e1bebc2.jpg',
+        '60-pvc-et-vinyle.html': 'https://i.pinimg.com/1200x/f3/8d/73/f38d73da11c11499b476e4b7979e7156.jpg',
+        '47-bruit-d-impact.html': 'https://i.pinimg.com/1200x/47/20/d3/4720d3edf4df374c725892ed31ab388f.jpg',
+        '48-autonivelant.html': 'https://i.pinimg.com/1200x/41/52/b9/4152b9bd0ecce625b9817c7e30073ec3.jpg',
+        '63-primaire-d-adherence.html': 'https://i.pinimg.com/1200x/4b/e1/87/4be1872821eabae8871568ec5f576ae7.jpg',
+        '64-anti-humidite.html': 'https://i.pinimg.com/736x/6f/16/51/6f16511376bccc7e7892bf19a2e96012.jpg',
+        '65-rebouchage-et-lissage.html': 'https://i.pinimg.com/1200x/10/f3/48/10f348badac29bf0808c521171a31c16.jpg',
+        '80-panneau-en-bois.html': 'https://i.pinimg.com/736x/88/e4/22/88e422cb77726efd1513acb8b4cead79.jpg',
+        '81-panneau-en-fibres-de-polyester-recyclees.html': 'https://i.pinimg.com/1200x/f3/8d/73/f38d73da11c11499b476e4b7979e7156.jpg',
+        '79-plaque-perforee-acoustique.html': 'https://i.pinimg.com/736x/09/e7/65/09e7653d2fb8c57588549960b5e2d09e.jpg',
+        '24-machines-de-projection.html': 'https://i.pinimg.com/1200x/17/94/fb/1794fbb1f33351a713b4f0528537ac9f.jpg',
+        '25-pieces-de-rechange.html': 'https://i.pinimg.com/1200x/dc/11/54/dc1154b36f56a484d182bf00912ef2b7.jpg',
+        '26-outillages.html': 'https://i.pinimg.com/1200x/12/18/9e/12189e14312f38e8f28cd7a9350d5f72.jpg',
+        '27-baguettes.html': 'https://i.pinimg.com/1200x/8d/21/76/8d2176c3706296df5bd65f075667eb13.jpg',
+        '28-mailles.html': 'https://i.pinimg.com/736x/71/29/7a/71297a4658d2d1981b9126d849705a40.jpg'
+    };
 
     const catalogue = document.createElement('section');
     catalogue.className = 'solution-subcatalogue';
@@ -180,7 +225,7 @@
         imageLink.className = 'solution-card__image';
         imageLink.href = href;
         const image = document.createElement('img');
-        image.src = images[index % images.length];
+        image.src = subSolutionImages[href] || images[index % images.length];
         image.alt = 'Découvrir ' + name;
         image.loading = 'lazy';
         imageLink.append(image);
