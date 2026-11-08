@@ -4,6 +4,7 @@
 
     var $body = $('body');
     var $window = $(window);
+    var siteRootUrl = new URL('../../', document.currentScript.src);
 
 //hidding menu elements that do not fit in menu width
 //processing center logo
@@ -2092,6 +2093,35 @@
         });
     }//eof windowLoadInit
     $(function () {
+        var currentPath = window.location.pathname.toLowerCase();
+        var activeSection = currentPath.indexOf('/solutions/') !== -1 ? 'solutions'
+            : currentPath.indexOf('/produits/') !== -1 || currentPath.indexOf('/produit-details/') !== -1 ? 'products'
+            : currentPath.indexOf('/contact') !== -1 ? 'contact'
+            : currentPath.endsWith('/') || currentPath.endsWith('/index.html') ? 'home'
+            : '';
+        var mobileNavItems = [
+            { label: 'Accueil', href: 'index.html', icon: 'fa-home', section: 'home' },
+            { label: 'Produits', href: 'produits/index.html', icon: 'fa-cube', section: 'products' },
+            { label: 'Solutions', href: 'solutions/index.html', icon: 'fa-th-large', section: 'solutions' },
+            { label: 'Contact', href: 'contact.html', icon: 'fa-phone', section: 'contact' }
+        ];
+        var $mobileNav = $('<nav class="mobile-bottom-nav" aria-label="Navigation mobile"></nav>');
+
+        $.each(mobileNavItems, function (index, item) {
+            var $link = $('<a class="mobile-bottom-nav__link"></a>')
+                .attr('href', new URL(item.href, siteRootUrl).href);
+            if (item.section === activeSection) {
+                $link.attr('aria-current', 'page');
+            }
+            $link.append(
+                $('<i aria-hidden="true"></i>').addClass('fas ' + item.icon),
+                $('<span></span>').text(item.label)
+            );
+            $mobileNav.append($link);
+        });
+
+        $body.append($mobileNav);
+
         jQuery('img.html').each(function(){
             var $img = jQuery(this);
             var imgID = $img.attr('id');
