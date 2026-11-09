@@ -256,5 +256,10 @@
     });
 
     catalogue.append(heading, grid);
-    hero.after(catalogue);
+    const solutionOverview = document.getElementById('solution-description');
+    if (solutionOverview) {
+        solutionOverview.after(catalogue);
+    } else {
+        hero.after(catalogue);
+    }
 }());
