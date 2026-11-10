@@ -74,7 +74,7 @@
         '72-cloisons-mobiles.html': 'Cloisons mobiles',
         '6-revetements-de-sols-souples.html': 'Revêtements de sols souples',
         '73-cloisons-amovibles.html': 'Cloisons amovibles',
-        '61-traitement-de-murs-et-sols.html': 'Traitement de murs et sols',
+        '61-traitement-de-murs-et-sols.html': 'PROTECTION ET TRAITEMENT DES SURFACES',
         '74-cabines-acoustiques.html': 'Cabines acoustiques',
         '78-revetement-acoustique-decoratif.html': 'Revêtement acoustique décoratif',
         '75-cabines-sanitaires.html': 'Cabines sanitaires',
