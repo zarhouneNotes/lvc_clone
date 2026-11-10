@@ -68,7 +68,7 @@
     const rootSolutions = {
         '1-faux-plafonds.html': 'Faux plafonds',
         '41-isolations-and-toitures.html': 'Isolations & toitures',
-        '2-cloisons-et-contre-cloisons.html': 'Cloisons & contre-cloisons',
+        '2-cloisons-et-contre-cloisons.html': 'Cloisons & doublages',
         '69-ossatures-legeres.html': 'Ossatures légères',
         '5-faux-planchers.html': 'Faux planchers',
         '72-cloisons-mobiles.html': 'Cloisons mobiles',
@@ -147,6 +147,10 @@
         throw new Error('Unable to find the solution product catalogue.');
     }
     productSection.hidden = true;
+
+    if (currentPage === '2-cloisons-et-contre-cloisons.html') {
+        return;
+    }
 
     if (!subSolutions) {
         return;
