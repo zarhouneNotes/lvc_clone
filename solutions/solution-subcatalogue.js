@@ -67,7 +67,7 @@
 
     const rootSolutions = {
         '1-faux-plafonds.html': 'Faux plafonds',
-        '41-isolations-and-toitures.html': 'Isolations & toitures',
+        '41-isolations-and-toitures.html': 'Isolation & étanchéité',
         '2-cloisons-et-contre-cloisons.html': 'Cloisons & doublages',
         '69-ossatures-legeres.html': 'Ossatures légères',
         '5-faux-planchers.html': 'Faux planchers',
@@ -79,6 +79,39 @@
         '78-revetement-acoustique-decoratif.html': 'Revêtement acoustique décoratif',
         '75-cabines-sanitaires.html': 'Cabines sanitaires',
         '8-projection-de-mortiers.html': 'Projection de mortiers'
+    };
+
+    const rootSolutionIntros = {
+        '5-faux-planchers.html': {
+            paragraphs: [
+                'Chez LVC DISTRIBUTION, nous proposons des solutions de faux planchers techniques conçues pour répondre aux exigences des bâtiments professionnels, tertiaires et industriels.'
+            ],
+            image: 'https://i.pinimg.com/1200x/d6/56/c5/d656c52cd3a74651bf80467a74c39d3b.jpg',
+            imageAlt: 'Faux plancher technique pour un bâtiment professionnel'
+        },
+        '6-revetements-de-sols-souples.html': {
+            paragraphs: [
+                'Chez LVC DISTRIBUTION, nous proposons une gamme de revêtements de sols souples adaptés aux exigences des projets résidentiels, commerciaux, tertiaires et industriels.'
+            ],
+            image: 'https://i.pinimg.com/1200x/18/94/16/189416adeaad07598b02a2f6579992a3.jpg',
+            imageAlt: 'Revêtement de sol souple dans un espace intérieur'
+        },
+        '61-traitement-de-murs-et-sols.html': {
+            paragraphs: [
+                'Chez LVC DISTRIBUTION, nous proposons une gamme de produits et de solutions destinés à la préparation, au traitement et à la protection des surfaces intérieures et extérieures.',
+                'Les murs, sols, façades et ouvrages en béton sont quotidiennement exposés à différentes contraintes : humidité, infiltrations, fissuration, usure, agressions chimiques et dégradations liées aux conditions environnementales.',
+                'Pour répondre à ces exigences, nous mettons à disposition des professionnels du bâtiment des solutions adaptées permettant de préserver les supports, d’améliorer leur résistance et de prolonger leur durée de vie.'
+            ],
+            image: 'https://i.pinimg.com/736x/a1/ba/1a/a1ba1ab417161e1e741a9c2a891a5bd3.jpg',
+            imageAlt: 'Protection et traitement des surfaces du bâtiment'
+        },
+        '8-projection-de-mortiers.html': {
+            paragraphs: [
+                'Chez LVC DISTRIBUTION, nous proposons une gamme de machines de projection d’enduits, d’équipements et de pièces de rechange destinés aux professionnels du bâtiment et aux entreprises spécialisées dans les travaux de finition.'
+            ],
+            image: 'https://i.pinimg.com/736x/a6/78/48/a67848420813c836ee53d0a35982254e.jpg',
+            imageAlt: 'Machine et équipements de projection de mortiers'
+        }
     };
 
     const currentPage = decodeURIComponent(window.location.pathname.split('/').pop());
@@ -132,6 +165,49 @@
     hero.append(heroImage, heroContent);
     header.after(hero);
     pageSlider.remove();
+
+    if (currentPage === '1-faux-plafonds.html') {
+        document.body.classList.add('faux-plafonds-static-page');
+        return;
+    }
+
+    if (currentPage === '41-isolations-and-toitures.html') {
+        document.body.classList.add('isolation-static-page');
+        return;
+    }
+
+    const rootIntro = rootSolutionIntros[currentPage];
+    let solutionIntro = null;
+    if (rootIntro) {
+        solutionIntro = document.createElement('section');
+        solutionIntro.className = 'solution-image-intro';
+
+        const introContent = document.createElement('div');
+        introContent.className = 'solution-image-intro__content';
+        const introEyebrow = document.createElement('p');
+        introEyebrow.className = 'solution-description__eyebrow';
+        introEyebrow.textContent = 'La solution';
+        const introTitle = document.createElement('h2');
+        introTitle.textContent = currentName;
+        introContent.append(introEyebrow, introTitle);
+
+        rootIntro.paragraphs.forEach(function (paragraph) {
+            const text = document.createElement('p');
+            text.textContent = paragraph;
+            introContent.append(text);
+        });
+
+        const introImage = document.createElement('img');
+        introImage.src = rootIntro.image;
+        introImage.alt = rootIntro.imageAlt;
+        introImage.loading = 'lazy';
+
+        const visual = document.createElement('figure');
+        visual.className = 'solution-image-intro__visual';
+        visual.append(introImage);
+        solutionIntro.append(introContent, visual);
+        hero.after(solutionIntro);
+    }
 
     document.querySelectorAll('ul.products > li.product').forEach(function (productCard) {
         const details = productCard.querySelector('.product-card__details');
@@ -261,8 +337,9 @@
 
     catalogue.append(heading, grid);
     const solutionOverview = document.getElementById('solution-description');
-    if (solutionOverview) {
-        solutionOverview.after(catalogue);
+    const catalogueAnchor = solutionOverview || solutionIntro || hero;
+    if (catalogueAnchor) {
+        catalogueAnchor.after(catalogue);
     } else {
         hero.after(catalogue);
     }
