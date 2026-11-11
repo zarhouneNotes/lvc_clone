@@ -375,7 +375,10 @@
     </header>
     <main class="home-redesign">
         <section class="home-hero" aria-labelledby="home-hero-title">
-            <img class="home-hero__image" src="assets_frontend/imgs/lvc-home-hero.png" alt="Façade du siège de LVC Distribution au crépuscule" fetchpriority="high">
+            <picture>
+                <source media="(max-width: 700px)" srcset="assets_frontend/imgs/lvc-home-hero-mobile.png">
+                <img class="home-hero__image" src="assets_frontend/imgs/lvc-home-hero.png" alt="Façade du siège de LVC Distribution au crépuscule" fetchpriority="high">
+            </picture>
             <div class="home-hero__shade"></div>
             <div class="home-wrap home-hero__inner">
                 <div class="home-hero__copy">
