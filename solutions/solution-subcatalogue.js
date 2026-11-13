@@ -290,7 +290,7 @@
     const heading = document.createElement('div');
     heading.className = 'solution-subcatalogue__heading';
     const title = document.createElement('h2');
-    title.textContent = 'Nos sous-solutions';
+    title.textContent = 'Notre gamme de produits';
     heading.append(title);
 
     const grid = document.createElement('div');
